@@ -71,7 +71,7 @@ This module has a few dependencies:
 Here is examples of how you can use this module in your inventory structure:
 ### Example
 ```hcl
-module "pritunl" {
+    module "pritunl" {
 source      = "./../"
 name        = "pritunl"
 environment = "test"
