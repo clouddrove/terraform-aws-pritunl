@@ -146,7 +146,7 @@ data "aws_iam_policy_document" "iam-policy" {
   }
 }
 
-module "ec2" {
+module "pritunl" {
   source      = "./../"
   name        = "pritunl"
   environment = "test"
