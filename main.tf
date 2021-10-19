@@ -17,7 +17,7 @@ module "ec2" {
 
   #Networking
   vpc_security_group_ids_list = var.vpc_security_group_ids_list
-  subnet_ids                  =  var.subnet_ids
+  subnet_ids                  = var.subnet_ids
   assign_eip_address          = true
   associate_public_ip_address = true
 

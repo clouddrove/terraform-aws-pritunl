@@ -1,9 +1,9 @@
 output "instance_id" {
-  value       = module.ec2.*.instance_id
-  description = "The instance ID."
+  value       = module.pritunl.*.instance_id
+  description = "The Pritunl ID."
 }
 
 output "tags" {
-  value       = module.ec2.tags
-  description = "The instance tags."
+  value       = module.pritunl.tags
+  description = "The pritunl tags."
 }

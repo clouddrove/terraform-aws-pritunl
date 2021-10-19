@@ -1,5 +1,5 @@
 output "private_ip" {
-  value       =  module.ec2.private_ip
+  value       = module.ec2.private_ip
   description = "Private IP of instance."
 }
 
