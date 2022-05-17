@@ -4,7 +4,7 @@ provider "aws" {
 
 module "vpc" {
   source  = "clouddrove/vpc/aws"
-  version = "0.15.0"
+  version = "0.15.1"
 
   name        = "vpc"
   environment = "test"
@@ -15,7 +15,7 @@ module "vpc" {
 
 module "public_subnets" {
   source  = "clouddrove/subnet/aws"
-  version = "0.15.0"
+  version = "0.15.3"
 
   name        = "public-subnet"
   environment = "test"
@@ -31,7 +31,7 @@ module "public_subnets" {
 
 module "vpn_sg" {
   source  = "clouddrove/security-group/aws"
-  version = "0.15.0"
+  version = "1.0.1"
 
   name          = "pritunl"
   environment   = "test"
@@ -44,7 +44,7 @@ module "vpn_sg" {
 
 module "http-https" {
   source      = "clouddrove/security-group/aws"
-  version     = "0.15.0"
+  version     = "1.0.1"
   name        = "http-https"
   environment = "test"
   label_order = ["name", "environment"]
@@ -56,21 +56,21 @@ module "http-https" {
 
 module "ssh" {
   source      = "clouddrove/security-group/aws"
-  version     = "0.15.0"
+  version     = "1.0.1"
   name        = "ssh"
   environment = "test"
   label_order = ["name", "environment"]
 
   vpc_id        = module.vpc.vpc_id
-  allowed_ip    = [module.vpc.vpc_cidr_block, ""]
+  allowed_ip    = [module.vpc.vpc_cidr_block]
   allowed_ports = [22]
 }
 
 module "keypair" {
   source  = "clouddrove/keypair/aws"
-  version = "0.15.0"
+  version = "1.0.1"
 
-  public_key      = "ssh-rsa +Nn184T4BSHeW2up8UJ1SOEd+WzzynXczdXoQcBN2kaz4dYFpRXchsAB6ejZrbEq7wyZvutf11OiS21XQ67+30lEL2WAO4i95e4sI8AdgwJgzrqVcicr3ImE+BRDkndMn5k1LhNGqwMD3Iuoel84xvinPAcElDLiFmL3BJVA/53bAlUmWqvUGW9SL5JpLUmZgE6kp+Tps7D9jpooGGJKmqgJLkJTzAmTSJh0gea/rT5KwI4j169TQD9xl6wFqns4BdQ4dMKHQCgDx8LbEd96l9F9ruWwQ8EAZBe4nIEKTV9ri+04JVhSQ=="
+  public_key      = "ssh-rsa AAAAB3NzaC1yc2EAoH5VN917JHNcDf/C8rA0bl6RrRpmDXieA5313Br3UP5qXZSebyRA+WcXtxB8zk9xntliwXU+GpX4WCMcCPLgDkUbbmKInESoH2DFnqgfxyWQaOYZJ2W7/6Aa17qTtrT04FdQel2jdNGjp7BwjHFJxAiSUbDuJPFjZUoEATpryUyT4opAQh7lo/ZwSxrH6wPSGAC0npp/hiJ8/PN2zpFbVJBlHXX96bCGfYQUC013xN54z4HmElGTCtC45SGQ766lmGiIRfxUh/EprjrCQ/u0yOidz1l/eed/CruKss2Vzgd9CnA4tB/3UhsAnEZoTz2Qb4NnWIdHZC8kKIlAumQxLEb/yukofdO0JEGi07LsgwRx1gDcESFzcfnHHNXMybrPU3YrOPI9x22QHt5ufmeZTw3zqIsm7plxhUlhwaIEOzKLjZC9Y9L6FAulz0uMKsOdDqXKAkrujI6/cgxHqUZ8oq8t"
   key_name        = "devops"
   environment     = "test"
   label_order     = ["name", "environment"]
@@ -81,7 +81,7 @@ module "keypair" {
 
 module "iam-role" {
   source  = "clouddrove/iam-role/aws"
-  version = "0.15.0"
+  version = "1.0.1"
 
   name               = "iam-role-rrr"
   environment        = "test"
@@ -94,7 +94,7 @@ module "iam-role" {
 
 module "kms_key" {
   source                  = "clouddrove/kms/aws"
-  version                 = "0.15.0"
+  version                 = "1.0.1"
   name                    = "kms"
   environment             = "test"
   label_order             = ["environment", "name"]
@@ -102,7 +102,7 @@ module "kms_key" {
   description             = "KMS key for ec2"
   deletion_window_in_days = 7
   enable_key_rotation     = true
-  alias                   = "alias/ec2"
+  alias                   = "alias/ec22"
   policy                  = data.aws_iam_policy_document.kms.json
 }
 
