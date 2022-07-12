@@ -2,7 +2,7 @@
 
 module "ec2" {
   source      = "clouddrove/ec2/aws"
-  version     = "0.15.1"
+  version     = "1.0.1"
   name        = var.name
   environment = var.environment
   label_order = var.label_order
