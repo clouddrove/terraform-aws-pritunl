@@ -79,6 +79,7 @@ Here is examples of how you can use this module in your inventory structure:
 ```hcl
     module "pritunl" {
 source      = "./../"
+version     = "1.3.0"
 name        = "pritunl"
 environment = "test"
 label_order = ["name", "environment"]
