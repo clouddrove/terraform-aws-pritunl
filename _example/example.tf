@@ -1,10 +1,17 @@
+##----------------------------------------------------------------------------
+## Provider block added, Use the Amazon Web Services (AWS) provider to interact with the many resources supported by AWS.
+##-----------------------------------------------------------------------------
+
 provider "aws" {
   region = "eu-west-1"
 }
 
+##-------------------------------------------------------------------------------------------
+## A VPC is a virtual network that closely resembles a traditional network that you'd operate in your own data center.
+##-------------------------------------------------------------------------------------------
 module "vpc" {
   source  = "clouddrove/vpc/aws"
-  version = "1.3.0"
+  version = "1.3.1"
 
   name        = "vpc"
   environment = "test"
@@ -13,6 +20,9 @@ module "vpc" {
   cidr_block = "172.16.0.0/16"
 }
 
+##-----------------------------------------------------
+## A subnet is a range of IP addresses in your VPC.
+##-----------------------------------------------------
 module "public_subnets" {
   source  = "clouddrove/subnet/aws"
   version = "1.3.0"
@@ -29,6 +39,9 @@ module "public_subnets" {
   ipv6_cidr_block    = module.vpc.ipv6_cidr_block
 }
 
+##-----------------------------------------------------
+## An AWS security group acts as a virtual firewall for incoming and outgoing traffic.
+##-----------------------------------------------------
 module "vpn_sg" {
   source  = "clouddrove/security-group/aws"
   version = "1.3.0"
@@ -42,6 +55,9 @@ module "vpn_sg" {
   allowed_ports = [1194]
 }
 
+##-----------------------------------------------------
+## An AWS security group acts as a virtual firewall for incoming and outgoing traffic with http-https.
+##-----------------------------------------------------
 module "http-https" {
   source      = "clouddrove/security-group/aws"
   version     = "1.3.0"
@@ -54,6 +70,9 @@ module "http-https" {
   allowed_ports = [80, 443]
 }
 
+##-----------------------------------------------------
+## An AWS security group acts as a virtual firewall for incoming and outgoing traffic with ssh.
+##-----------------------------------------------------
 module "ssh" {
   source      = "clouddrove/security-group/aws"
   version     = "1.3.0"
@@ -66,6 +85,9 @@ module "ssh" {
   allowed_ports = [22]
 }
 
+##--------------------------------------------------------------------------------------
+## A key pair is a combination of a public key that is used to encrypt data and a private key that is used to decrypt data.
+##--------------------------------------------------------------------------------------
 module "keypair" {
   source  = "clouddrove/keypair/aws"
   version = "1.3.0"
@@ -77,8 +99,9 @@ module "keypair" {
   enable_key_pair = true
 }
 
-
-
+##---------------------------------------------------------------------------------------------------------------------------
+## AWS Identity and Access Management (IAM) roles are entities you create and assign specific permissions to that allow trusted identities such as workforce identities and applications to perform actions in AWS.
+##--------------------------------------------------------------------------------------------------------------------------
 module "iam-role" {
   source  = "clouddrove/iam-role/aws"
   version = "1.3.0"
@@ -92,6 +115,9 @@ module "iam-role" {
   policy         = data.aws_iam_policy_document.iam-policy.json
 }
 
+##-----------------------------------------------------
+## AWS Key Management Service (AWS KMS) lets you create, manage, and control cryptographic keys across your applications and AWS services.
+##-----------------------------------------------------
 module "kms_key" {
   source                  = "clouddrove/kms/aws"
   version                 = "1.3.0"
@@ -146,6 +172,9 @@ data "aws_iam_policy_document" "iam-policy" {
   }
 }
 
+##-----------------------------------------------------------------------------
+## ec2-pritunl module call.
+##-----------------------------------------------------------------------------
 module "pritunl" {
   source      = "./../"
   name        = "pritunl"
