@@ -90,7 +90,7 @@ module "ssh" {
 ##--------------------------------------------------------------------------------------
 module "keypair" {
   source  = "clouddrove/keypair/aws"
-  version = "1.3.0"
+  version = "1.3.1"
 
   public_key      = "ssh-rsa AAAAB3NzaC1ysbSSseLd+ldHEOM3+lajUSGqWgw7gyK3jsTVVcokhK3TDuR3pi4u2QDR2tvLXddPKd37a2S7rjeqecw+XRW9559zKaR7RJJfjO1u1Onc2tgA3y0btdju2bcYBtFkRVOLwpog8CvslYEDV1Vf9HNeh9A3yOS6Pkjq6gDMrsUVF89ps3zuLmdVBIlCOnJDkwHK71lKihGKdkeXEtAj0aOQzAJsIpDFXz7vob9OiA/fb2T3t4R1EwEsPEnYVczKMsqUL/6HYwGHxA5rUX3uD2UBm6sbGBH00ZCj6yUxlKLk4c5gHXaEl8yyYL0wVkL00KYx3GCh1LvRdQL8fvzImBCNgZdSpKT2xj"
   key_name        = "devops"
