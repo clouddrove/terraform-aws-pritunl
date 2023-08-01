@@ -11,19 +11,19 @@ module "ec2" {
   ami              = var.ami
   instance_type    = var.instance_type
   monitoring       = var.monitoring
-  tenancy          = "default"
+  tenancy          = var.tenancy
 
   #Networking
   vpc_security_group_ids_list = var.vpc_security_group_ids_list
   subnet_ids                  = var.subnet_ids
-  assign_eip_address          = true
-  associate_public_ip_address = true
+  assign_eip_address          = var.assign_eip_address
+  associate_public_ip_address = var.associate_public_ip_address
 
   #Keypair
   key_name = var.key_name
 
   #IAM
-  instance_profile_enabled = true
+  instance_profile_enabled = var.instance_profile_enabled
   iam_instance_profile     = var.iam_instance_profile
 
   #Root Volume

@@ -25,7 +25,7 @@ module "vpc" {
 ##-----------------------------------------------------
 module "public_subnets" {
   source  = "clouddrove/subnet/aws"
-  version = "1.3.0"
+  version = "2.0.0"
 
   name        = "public-subnet"
   environment = "test"
@@ -44,12 +44,11 @@ module "public_subnets" {
 ##-----------------------------------------------------
 module "vpn_sg" {
   source  = "clouddrove/security-group/aws"
-  version = "1.3.0"
+  version = "2.0.0"
 
   name          = "pritunl"
   environment   = "test"
   label_order   = ["name", "environment"]
-  protocol      = "udp"
   vpc_id        = module.vpc.vpc_id
   allowed_ip    = ["0.0.0.0/0"]
   allowed_ports = [1194]
@@ -89,7 +88,7 @@ module "ssh" {
 ## A key pair is a combination of a public key that is used to encrypt data and a private key that is used to decrypt data.
 ##--------------------------------------------------------------------------------------
 module "keypair" {
-  source     = "clouddrove/keypair/aws"
+  source      = "clouddrove/keypair/aws"
   version     = "1.3.1"
   name        = "key"
   environment = "test"
