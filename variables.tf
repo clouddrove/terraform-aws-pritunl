@@ -30,37 +30,11 @@ variable "label_order" {
   description = "Label order, e.g. `name`,`application`."
 }
 
-variable "attributes" {
-  type        = list(any)
-  default     = []
-  description = "Additional attributes (e.g. `1`)."
-}
-
-variable "delimiter" {
-  type        = string
-  default     = "-"
-  description = "Delimiter to be used between `organization`, `environment`, `name` and `attributes`."
-}
-
-variable "tags" {
-  type        = map(any)
-  default     = {}
-  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
-}
-
 
 variable "key_name" {
   type        = string
   default     = ""
   description = "The key name to use for the instance."
-}
-
-
-
-variable "managedby" {
-  type        = string
-  default     = "hello@clouddrove.com"
-  description = "ManagedBy, eg 'CloudDrove'."
 }
 
 variable "ami" {
@@ -71,6 +45,7 @@ variable "ami" {
 
 variable "instance_type" {
   type        = string
+  default     = ""
   description = "The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance."
 }
 variable "ebs_optimized" {
@@ -93,11 +68,22 @@ variable "vpc_security_group_ids_list" {
   sensitive   = true
 }
 
-variable "subnet" {
+variable "tenancy" {
   type        = string
-  default     = null
-  description = "VPC Subnet ID the instance is launched in."
-  sensitive   = true
+  default     = "default"
+  description = "The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command."
+}
+
+variable "instance_profile_enabled" {
+  type        = bool
+  default     = false
+  description = "Flag to control the instance profile creation."
+}
+
+variable "root_block_device" {
+  type        = list(any)
+  default     = []
+  description = "Customize details about the root block device of the instance. See Block Devices below for details."
 }
 
 variable "associate_public_ip_address" {
@@ -107,45 +93,11 @@ variable "associate_public_ip_address" {
   sensitive   = true
 }
 
-variable "ebs_block_device" {
-  type        = list(any)
-  default     = []
-  description = "Additional EBS block devices to attach to the instance."
-}
-
-variable "ephemeral_block_device" {
-  type        = list(any)
-  default     = []
-  description = "Customize Ephemeral (also known as Instance Store) volumes on the instance."
-}
-
-variable "disable_api_termination" {
+variable "assign_eip_address" {
   type        = bool
   default     = false
-  description = "If true, enables EC2 Instance Termination Protection."
-}
-
-variable "instance_initiated_shutdown_behavior" {
-  type    = string
-  default = "terminate"
-}
-
-variable "placement_group" {
-  type        = string
-  default     = ""
-  description = "The Placement Group to start the instance in."
-}
-
-variable "tenancy" {
-  type        = string
-  default     = "default"
-  description = "The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command."
-}
-
-variable "root_block_device" {
-  type        = list(any)
-  default     = []
-  description = "Customize details about the root block device of the instance. See Block Devices below for details."
+  description = "Assign an Elastic IP address to the instance."
+  sensitive   = true
 }
 
 variable "user_data" {
@@ -154,32 +106,11 @@ variable "user_data" {
   description = "(Optional) A string of the desired User Data for the ec2."
 }
 
-variable "assign_eip_address" {
-  type        = bool
-  default     = false
-  description = "Assign an Elastic IP address to the instance."
-  sensitive   = true
+variable "instance_tags" {
+  type        = map(any)
+  default     = {}
+  description = "Instance tags."
 }
-
-variable "ebs_iops" {
-  type        = number
-  default     = 0
-  description = "Amount of provisioned IOPS. This must be set with a volume_type of io1."
-}
-
-variable "availability_zone" {
-  type        = list(any)
-  default     = []
-  description = "Availability Zone the instance is launched in. If not set, will be launched in the first AZ of the region."
-  sensitive   = true
-}
-
-variable "ebs_device_name" {
-  type        = list(string)
-  default     = ["/dev/xvdb", "/dev/xvdc", "/dev/xvdd", "/dev/xvde", "/dev/xvdf", "/dev/xvdg", "/dev/xvdh", "/dev/xvdi", "/dev/xvdj", "/dev/xvdk", "/dev/xvdl", "/dev/xvdm", "/dev/xvdn", "/dev/xvdo", "/dev/xvdp", "/dev/xvdq", "/dev/xvdr", "/dev/xvds", "/dev/xvdt", "/dev/xvdu", "/dev/xvdv", "/dev/xvdw", "/dev/xvdx", "/dev/xvdy", "/dev/xvdz"]
-  description = "Name of the EBS device to mount."
-}
-
 variable "ebs_volume_size" {
   type        = number
   default     = 30
@@ -203,11 +134,6 @@ variable "ebs_volume_enabled" {
   default     = false
   description = "Flag to control the ebs creation."
 }
-variable "instance_profile_enabled" {
-  type        = bool
-  default     = false
-  description = "Flag to control the instance profile creation."
-}
 
 variable "subnet_ids" {
   type        = list(string)
@@ -216,103 +142,8 @@ variable "subnet_ids" {
   sensitive   = true
 }
 
-variable "instance_count" {
-  type        = number
-  default     = 1
-  description = "Number of instances to launch."
-}
-
-variable "source_dest_check" {
-  type        = bool
-  default     = true
-  description = "Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs."
-}
-
-variable "ipv6_address_count" {
-  type        = number
-  default     = null
-  description = "Number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet."
-}
-
-variable "ipv6_addresses" {
-  type        = list(any)
-  default     = null
-  description = "List of IPv6 addresses from the range of the subnet to associate with the primary network interface."
-  sensitive   = true
-}
-
-variable "network_interface" {
-  description = "Customize network interfaces to be attached at instance boot time"
-  type        = list(map(string))
-  default     = []
-}
-
-
-variable "host_id" {
-  type        = string
-  default     = null
-  description = "The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host."
-}
-
-variable "cpu_core_count" {
-  type        = string
-  default     = null
-  description = "Sets the number of CPU cores for an instance."
-}
-
 variable "iam_instance_profile" {
   type        = string
   default     = ""
   description = "The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile."
-}
-
-variable "cpu_credits" {
-  type        = string
-  default     = "standard"
-  description = "The credit option for CPU usage. Can be `standard` or `unlimited`. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default."
-}
-
-variable "instance_tags" {
-  type        = map(any)
-  default     = {}
-  description = "Instance tags."
-}
-
-variable "dns_zone_id" {
-  type        = string
-  default     = ""
-  description = "The Zone ID of Route53."
-  sensitive   = true
-}
-
-variable "dns_enabled" {
-  type        = bool
-  default     = false
-  description = "Flag to control the dns_enable."
-}
-
-variable "hostname" {
-  type        = string
-  default     = ""
-  description = "DNS records to create."
-  sensitive   = true
-}
-
-variable "type" {
-  type        = string
-  default     = "CNAME"
-  description = "Type of DNS records to create."
-}
-
-variable "ttl" {
-  type        = string
-  default     = "300"
-  description = "The TTL of the record to add to the DNS zone to complete certificate validation."
-}
-
-variable "kms_key_id" {
-  type        = string
-  default     = ""
-  description = "The ARN for the KMS encryption key. When specifying kms_key_id, encrypted needs to be set to true."
-  sensitive   = true
 }
