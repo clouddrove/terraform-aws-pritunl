@@ -1,50 +1,41 @@
 module "ec2" {
   source      = "clouddrove/ec2/aws"
-  version     = "1.3.0"
+  version     = "2.0.0"
   name        = var.name
   environment = var.environment
-  label_order = var.label_order
 
-  #instance
-  instance_enabled = var.pritunl_enabled
-  instance_count   = 1
-  ami              = var.ami
-  instance_type    = var.instance_type
-  monitoring       = var.monitoring
-  tenancy          = var.tenancy
-
-  #Networking
-  vpc_security_group_ids_list = var.vpc_security_group_ids_list
-  subnet_ids                  = var.subnet_ids
-  assign_eip_address          = var.assign_eip_address
-  associate_public_ip_address = var.associate_public_ip_address
+  ##----------------------------------------------------------------------------------
+  ## Below A security group controls the traffic that is allowed to reach and leave the resources that it is associated with.
+  ##----------------------------------------------------------------------------------
+  #tfsec:aws-ec2-no-public-ingress-sgr
+  vpc_id            = var.vpc_id
+  ssh_allowed_ip    = var.ssh_allowed_ip
+  ssh_allowed_ports = var.ssh_allowed_ports
+  #Instance
+  instance_count = var.instance_count
+  ami            = var.ami
+  instance_type  = var.instance_type
 
   #Keypair
-  key_name = var.key_name
+  public_key = var.public_key
+
+  #Networking
+  subnet_ids = var.subnet_ids
 
   #IAM
-  instance_profile_enabled = var.instance_profile_enabled
-  iam_instance_profile     = var.iam_instance_profile
+  iam_instance_profile = var.iam_instance_profile
 
   #Root Volume
   root_block_device = var.root_block_device
 
   #EBS Volume
-  ebs_optimized      = var.ebs_optimized
   ebs_volume_enabled = var.ebs_volume_enabled
   ebs_volume_type    = var.ebs_volume_type
   ebs_volume_size    = var.ebs_volume_size
 
-  #DNS
-  dns_enabled = false
-
   #Tags
   instance_tags = var.instance_tags
 
-  # Metadata
-  metadata_http_tokens_required        = "optional"
-  metadata_http_endpoint_enabled       = "enabled"
-  metadata_http_put_response_hop_limit = 2
-  #user data
+  #Mount EBS With User Data
   user_data = var.user_data
 }

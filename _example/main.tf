@@ -40,63 +40,81 @@ module "public_subnets" {
 }
 
 ##-----------------------------------------------------
-## An AWS security group acts as a virtual firewall for incoming and outgoing traffic.
+## An AWS security group acts as a virtual firewall for incoming and outgoing traffic with http-https.
 ##-----------------------------------------------------
-module "vpn_sg" {
+module "ssh" {
   source  = "clouddrove/security-group/aws"
   version = "2.0.0"
 
-  name          = "pritunl"
-  environment   = "test"
-  label_order   = ["name", "environment"]
-  vpc_id        = module.vpc.vpc_id
-  allowed_ip    = ["0.0.0.0/0"]
-  allowed_ports = [1194]
-}
-
-##-----------------------------------------------------
-## An AWS security group acts as a virtual firewall for incoming and outgoing traffic with http-https.
-##-----------------------------------------------------
-module "http-https" {
-  source      = "clouddrove/security-group/aws"
-  version     = "2.0.0"
-  name        = "http-https"
-  environment = "test"
-  label_order = ["name", "environment"]
-
-  vpc_id        = module.vpc.vpc_id
-  allowed_ip    = ["0.0.0.0/0"]
-  allowed_ports = [80, 443]
-}
-
-##-----------------------------------------------------
-## An AWS security group acts as a virtual firewall for incoming and outgoing traffic with ssh.
-##-----------------------------------------------------
-module "ssh" {
-  source      = "clouddrove/security-group/aws"
-  version     = "2.0.0"
   name        = "ssh"
   environment = "test"
-  label_order = ["name", "environment"]
-
-  vpc_id        = module.vpc.vpc_id
-  allowed_ip    = [module.vpc.vpc_cidr_block]
-  allowed_ports = [22]
+  vpc_id      = module.vpc.vpc_id
+  new_sg_ingress_rules_with_cidr_blocks = [{
+    rule_count  = 1
+    from_port   = 22
+    protocol    = "tcp"
+    to_port     = 22
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow ssh traffic."
+    },
+  ]
+  ## EGRESS Rules
+  new_sg_egress_rules_with_cidr_blocks = [{
+    rule_count  = 1
+    from_port   = 22
+    protocol    = "tcp"
+    to_port     = 22
+    cidr_blocks = [module.vpc.vpc_cidr_block]
+    description = "Allow ssh outbound traffic."
+    }
+  ]
 }
 
-##--------------------------------------------------------------------------------------
-## A key pair is a combination of a public key that is used to encrypt data and a private key that is used to decrypt data.
-##--------------------------------------------------------------------------------------
-module "keypair" {
-  source      = "clouddrove/keypair/aws"
-  version     = "1.3.1"
-  name        = "key"
-  environment = "test"
-  label_order = ["environment", "name"]
+module "http_https" {
+  source  = "clouddrove/security-group/aws"
+  version = "2.0.0"
 
-  public_key                 = ""
-  create_private_key_enabled = true
-  enable_key_pair            = true
+  name        = "http-https"
+  environment = "test"
+
+  vpc_id = module.vpc.vpc_id
+  ## INGRESS Rules
+  new_sg_ingress_rules_with_cidr_blocks = [{
+    rule_count  = 1
+    from_port   = 22
+    protocol    = "tcp"
+    to_port     = 22
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow ssh traffic."
+    },
+    {
+      rule_count  = 2
+      from_port   = 80
+      protocol    = "tcp"
+      to_port     = 80
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow http traffic."
+    },
+    {
+      rule_count  = 3
+      from_port   = 443
+      protocol    = "tcp"
+      to_port     = 443
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow https traffic."
+    }
+  ]
+  ## EGRESS Rules
+  new_sg_egress_rules_with_cidr_blocks = [{
+    rule_count       = 1
+    from_port        = 0
+    protocol         = "-1"
+    to_port          = 0
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    description      = "Allow all traffic."
+    }
+  ]
 }
 
 ##---------------------------------------------------------------------------------------------------------------------------
@@ -120,7 +138,7 @@ module "iam-role" {
 ##-----------------------------------------------------
 module "kms_key" {
   source                  = "clouddrove/kms/aws"
-  version                 = "1.3.0"
+  version                 = "1.3.1"
   name                    = "kms"
   environment             = "test"
   label_order             = ["environment", "name"]
@@ -131,7 +149,6 @@ module "kms_key" {
   alias                   = "alias/ec22"
   policy                  = data.aws_iam_policy_document.kms.json
 }
-
 
 data "aws_iam_policy_document" "kms" {
   version = "2012-10-17"
@@ -179,27 +196,22 @@ module "pritunl" {
   source      = "./../"
   name        = "pritunl"
   environment = "test"
-  label_order = ["name", "environment"]
 
   #instance
-  pritunl_enabled = true
-  ami             = "ami-0a8e758f5e873d1c1"
-  instance_type   = "t2.medium"
-  monitoring      = false
-  tenancy         = "default"
+  ami           = "ami-0a8e758f5e873d1c1"
+  instance_type = "t2.medium"
 
   #Networking
-  vpc_security_group_ids_list = [module.ssh.security_group_ids, module.http-https.security_group_ids, module.vpn_sg.security_group_ids]
-  subnet_ids                  = tolist(module.public_subnets.public_subnet_id)
-  assign_eip_address          = true
-  associate_public_ip_address = true
+  vpc_id            = module.vpc.vpc_id
+  ssh_allowed_ip    = ["0.0.0.0/0"]
+  subnet_ids        = tolist(module.public_subnets.public_subnet_id)
+  ssh_allowed_ports = [22, 1194]
 
   #Keypair
-  key_name = module.keypair.name
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmPuPTJ58AMvweGBuAqKX+tkb0ylYq5k6gPQnl6+ivQ8i/jsUJ+juI7q/7vSoTpd0k9Gv7DkjGWg1527I+LJeropVSaRqwDcrnuM1IfUCu0QdRoU8e0sW7kQGnwObJhnRcxiGPa1inwnneq9zdXK8BGgV2E4POKdwbEBlmjZmW8j4JMnCsLvZ4hxBjZB/3fnvHhn7UCqd2C6FhOz9k+aK2kxXHxdDdO9BzKqtvm5dSAxHhw6nDHSU+cHupjiiY/SvmFH0QpR5Fn1kyZH7DxV4D8R9wvP9jKZe/RRTEkB2HY7FpVNz/EqO/z5bv7japQ5LZY1fFOK47S5KVo20y12XwkBcHeL5Bc8MuKt552JSRH7KKxvr2KD9QN5lCc0sOnQnlOK0INGHeIY4WnUSBvlVd4aOAJa4xE2PP0/kbDMAZfO6ET5OIlZF+X7n5VCYyxNJLWbx4opFIcpWgINz4m/GkArB4p4KeF+pc84rX5GkM4fn5SsMMpJTZmhhJYA2YW/E= mamraj@mamraj"
 
   #IAM
-  instance_profile_enabled = true
-  iam_instance_profile     = module.iam-role.name
+  iam_instance_profile = module.iam-role.name
 
   #Root Volume
   root_block_device = [
@@ -213,5 +225,4 @@ module "pritunl" {
 
   #user data
   user_data = file("${path.module}/pritunl.sh")
-
 }
