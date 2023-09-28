@@ -3,12 +3,10 @@ output "private_ip" {
   description = "Private IP of instance."
 }
 
-
 output "tags" {
   value       = module.ec2.tags
   description = "The instance tags."
 }
-
 
 output "instance_id" {
   value       = module.ec2[*].instance_id
