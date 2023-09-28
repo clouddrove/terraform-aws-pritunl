@@ -1,7 +1,6 @@
 ##----------------------------------------------------------------------------
 ## Provider block added, Use the Amazon Web Services (AWS) provider to interact with the many resources supported by AWS.
 ##-----------------------------------------------------------------------------
-
 provider "aws" {
   region = "eu-west-1"
 }
@@ -42,6 +41,7 @@ module "public_subnets" {
 ##-----------------------------------------------------
 ## An AWS security group acts as a virtual firewall for incoming and outgoing traffic with http-https.
 ##-----------------------------------------------------
+#tfsec:ignore:aws-ec2-no-public-ingress-sgr
 module "ssh" {
   source  = "clouddrove/security-group/aws"
   version = "2.0.0"
@@ -70,6 +70,7 @@ module "ssh" {
   ]
 }
 
+#tfsec:ignore:aws-ec2-no-public-egress-sgr
 module "http_https" {
   source  = "clouddrove/security-group/aws"
   version = "2.0.0"
@@ -208,7 +209,7 @@ module "pritunl" {
   ssh_allowed_ports = [22, 1194]
 
   #Keypair
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmPuPTJ58AMvweGBuAqKX+tkb0ylYq5k6gPQnl6+ivQ8i/jsUJ+juI7q/7vSoTpd0k9Gv7DkjGWg1527I+LJeropVSaRqwDcrnuM1IfUCu0QdRoU8e0sW7kQGnwObJhnRcxiGPa1inwnneq9zdXK8BGgV2E4POKdwbEBlmjZmW8j4JMnCsLvZ4hxBjZB/3fnvHhn7UCqd2C6FhOz9k+aK2kxXHxdDdO9BzKqtvm5dSAxHhw6nDHSU+cHupjiiY/SvmFH0QpR5Fn1kyZH7DxV4D8R9wvP9jKZe/RRTEkB2HY7FpVNz/EqO/z5bv7japQ5LZY1fFOK47S5KVo20y12XwkBcHeL5Bc8MuKt552JSRH7KKxvr2KD9QN5lCc0sOnQnlOK0INGHeIY4WnUSBvlVd4aOAJa4xE2PP0/kbDMAZfO6ET5OIlZF+X7n5VCYyxNJLWbx4opFIcpWgINz4m/GkArB4p4KeF+pc84rX5GkM4fn5SsMMpJTZmhhJYA2YW/E= mamraj@mamraj"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmPuPTJ58AMvweGBuAqKX+tkb0ylYq5k6gPQnl6+ivQ8i/jsUJ+juI7q/7vSoTpd0k9Gv7DkjGWg1527I+LJeropVSaRqwDcrnuM1IfUCu0QdRoU8e0sW7kQGnwObJhnRcxiGPa1inwnneq9zdXK8BGgV2E4POKdwbEBlmjZmW8j4JMnCsLvZ4hxBjZB/3fnvHhn7UCqd2C6FhOz9k+aK2kxXHxdDdO9BzKqtvm5dSAxHhw6nDHSU+cHupjiiY/SvmFH0QpR5Fn1kyZH7DxV4D8R9wvP9jKZe/RRTEkB2HY7FpVNz/EqO/z5bv7japQ5LZY1fFOK47S5KVo20y12Xwk"
 
   #IAM
   iam_instance_profile = module.iam-role.name

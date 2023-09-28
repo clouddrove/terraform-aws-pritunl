@@ -22,6 +22,7 @@ module "ec2" {
   #Networking
   subnet_ids = var.subnet_ids
 
+  #tfsec:aws-ec2-enable-at-rest-encryption
   #IAM
   iam_instance_profile = var.iam_instance_profile
 
