@@ -56,7 +56,7 @@ module "ssh" {
     to_port     = 22
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow ssh traffic."
-  },
+    },
   ]
   ## EGRESS Rules
   new_sg_egress_rules_with_cidr_blocks = [{
@@ -66,7 +66,7 @@ module "ssh" {
     to_port     = 22
     cidr_blocks = [module.vpc.vpc_cidr_block]
     description = "Allow ssh outbound traffic."
-  }
+    }
   ]
 }
 
@@ -88,7 +88,7 @@ module "http_https" {
     to_port     = 22
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow ssh traffic."
-  },
+    },
     {
       rule_count  = 2
       from_port   = 80
@@ -115,7 +115,7 @@ module "http_https" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
     description      = "Allow all traffic."
-  }
+    }
   ]
 }
 
@@ -185,7 +185,7 @@ data "aws_iam_policy_document" "iam-policy" {
       "ssmmessages:CreateControlChannel",
       "ssmmessages:CreateDataChannel",
       "ssmmessages:OpenControlChannel",
-      "ssmmessages:OpenDataChannel"]
+    "ssmmessages:OpenDataChannel"]
     effect    = "Allow"
     resources = ["*"]
   }
