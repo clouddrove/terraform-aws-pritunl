@@ -1,7 +1,7 @@
 #tfsec:ignore:aws-ec2-enable-at-rest-encryption
 module "ec2" {
   source      = "clouddrove/ec2/aws"
-  version     = "2.0.0"
+  version     = "2.0.1"
   name        = var.name
   environment = var.environment
 
