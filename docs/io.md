@@ -28,3 +28,4 @@
 | instance\_id | The instance ID. |
 | private\_ip | Private IP of instance. |
 | tags | The instance tags. |
+
