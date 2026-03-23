@@ -30,27 +30,41 @@ variable "public_key" {
   description = "The key name to use for the instance."
 }
 
-variable "user_data" {
-  type        = string
-  default     = ""
-  description = "(Optional) A string of the desired User Data for the ec2."
-}
-
-variable "ami" {
-  type        = string
-  default     = ""
-  description = "The AMI to use for the instance."
-}
-
-variable "instance_type" {
-  type        = string
-  description = "The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance."
-}
-
-variable "root_block_device" {
-  type        = list(any)
-  default     = []
-  description = "Customize details about the root block device of the instance. See Block Devices below for details."
+variable "instance_configuration" {
+  description = "Configuration options for the EC2 instance including AMI, instance type, root block device, and user data."
+  type = object({
+    ami = optional(object({
+      type         = string
+      version      = optional(string)
+      architecture = string
+      region       = string
+    }), null)
+    ebs_optimized                        = optional(bool, false)
+    instance_type                        = string
+    monitoring                           = optional(bool, false)
+    associate_public_ip_address          = optional(bool, true)
+    disable_api_termination              = optional(bool, false)
+    instance_initiated_shutdown_behavior = optional(string, "stop")
+    placement_group                      = optional(string, "")
+    tenancy                              = optional(string, "default")
+    host_id                              = optional(string, null)
+    user_data                            = optional(string, "")
+    user_data_base64                     = optional(string, null)
+    user_data_replace_on_change          = optional(bool, null)
+    availability_zone                    = optional(string, null)
+    get_password_data                    = optional(bool, null)
+    private_ip                           = optional(string, null)
+    secondary_private_ips                = optional(list(string), null)
+    source_dest_check                    = optional(bool, true)
+    ipv6_address_count                   = optional(number, null)
+    ipv6_addresses                       = optional(list(string), null)
+    hibernation                          = optional(bool, false)
+    root_block_device                    = optional(list(any), [])
+    ephemeral_block_device               = optional(list(any), [])
+  })
+  default = {
+    instance_type = "t2.medium"
+  }
 }
 
 variable "ebs_volume_size" {

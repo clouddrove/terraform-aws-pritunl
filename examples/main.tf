@@ -199,9 +199,25 @@ module "pritunl" {
   name        = "pritunl"
   environment = "test"
 
-  #instance
-  ami           = "ami-0a8e758f5e873d1c1"
-  instance_type = "t2.medium"
+  #Instance
+  instance_configuration = {
+    ami = {
+      type         = "ubuntu"
+      version      = "22.04"
+      architecture = "x86_64"
+      region       = "eu-west-1"
+    }
+    instance_type = "t2.medium"
+    user_data     = file("${path.module}/pritunl.sh")
+    root_block_device = [
+      {
+        volume_type           = "gp2"
+        volume_size           = 20
+        delete_on_termination = true
+        kms_key_id            = module.kms_key.key_arn
+      }
+    ]
+  }
 
   #Networking
   vpc_id            = module.vpc.vpc_id
@@ -214,17 +230,4 @@ module "pritunl" {
 
   #IAM
   iam_instance_profile = module.iam-role.name
-
-  #Root Volume
-  root_block_device = [
-    {
-      volume_type           = "gp2"
-      volume_size           = 20
-      delete_on_termination = true
-      kms_key_id            = module.kms_key.key_arn
-    }
-  ]
-
-  #user data
-  user_data = file("${path.module}/pritunl.sh")
 }
