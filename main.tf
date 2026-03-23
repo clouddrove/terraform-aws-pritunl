@@ -12,10 +12,10 @@ module "ec2" {
   vpc_id            = var.vpc_id
   ssh_allowed_ip    = var.ssh_allowed_ip
   ssh_allowed_ports = var.ssh_allowed_ports
+
   #Instance
-  instance_count = var.instance_count
-  ami            = var.ami
-  instance_type  = var.instance_type
+  instance_count         = var.instance_count
+  instance_configuration = var.instance_configuration
 
   #Keypair
   public_key = var.public_key
@@ -27,9 +27,6 @@ module "ec2" {
   #IAM
   iam_instance_profile = var.iam_instance_profile
 
-  #Root Volume
-  root_block_device = var.root_block_device
-
   #EBS Volume
   ebs_volume_enabled = var.ebs_volume_enabled
   ebs_volume_type    = var.ebs_volume_type
@@ -37,7 +34,4 @@ module "ec2" {
 
   #Tags
   instance_tags = var.instance_tags
-
-  #Mount EBS With User Data
-  user_data = var.user_data
 }
