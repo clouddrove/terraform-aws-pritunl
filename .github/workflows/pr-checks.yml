@@ -1,0 +1,10 @@
+name: 🔍 PR Checks
+
+on:
+  pull_request:
+    paths:
+      - '**/*.tf'
+      - '*.tf'
+jobs:
+  pr-validation:
+    uses: clouddrove/github-shared-workflows/.github/workflows/pr-checks.yml@master

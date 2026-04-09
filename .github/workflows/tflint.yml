@@ -1,11 +1,9 @@
 name: tf-lint
 on:
-  push:
-    branches: [ master ]
   pull_request:
     paths:
       - '**/*.tf'
-  workflow_dispatch:
+      - '*.tf'
 jobs:
   tf-lint:
     uses: clouddrove/github-shared-workflows/.github/workflows/tf-lint.yml@master

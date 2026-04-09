@@ -1,11 +1,9 @@
 name: tf-checks
 on:
-  push:
-    branches: [ master ]
   pull_request:
     paths:
       - '**/*.tf'
-  workflow_dispatch:
+      - '*.tf'
 jobs:
   example:
     if: github.actor != 'dependabot[bot]'
