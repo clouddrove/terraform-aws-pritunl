@@ -2,9 +2,6 @@
 name: Auto merge
 on:
   pull_request:
-    paths:
-      - '**/*.tf'
-      - '*.tf'
 jobs:
   auto-merge:
     uses: clouddrove/github-shared-workflows/.github/workflows/pr-auto-merge.yml@master

@@ -2,10 +2,7 @@ name: Auto Assign PRs
 
 on:
   pull_request:
-    paths:
-      - '**/*.tf'
-      - '*.tf'
-
+    types: [opened, reopened]
   workflow_dispatch:
 jobs:
   assignee:

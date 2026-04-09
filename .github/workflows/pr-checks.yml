@@ -2,9 +2,7 @@ name: 🔍 PR Checks
 
 on:
   pull_request:
-    paths:
-      - '**/*.tf'
-      - '*.tf'
+    types: [opened, edited, synchronize, reopened]
 jobs:
   pr-validation:
     uses: clouddrove/github-shared-workflows/.github/workflows/pr-checks.yml@master
